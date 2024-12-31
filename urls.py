@@ -1,0 +1,2 @@
+WEBSITE_URL = 'https://www.reddit.com/r/sportsbook/'
+WEBSITE_URL_SEARCH = 'https://www.reddit.com/r/sportsbook/search/?q=PICK+OF+THE+DAY&cId=2b23322e-c772-4006-a698-b64a492c7c0b&iId=c1994e29-a2b2-4252-b1d1-90bc9e0d3c1c&sort=new'
