@@ -1,3 +1,4 @@
+import os
 import re
 import csv
 import time
@@ -8,8 +9,14 @@ from utils import scrapping_pick_of_day_link, setup_logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from dotenv import load_dotenv
+
+# Load environment variables from the .env file
+load_dotenv()
 
 logger = setup_logging()
+
+CSV_FILE_NAME = os.getenv('CSV_FILE_NAME')
 
 def scrap_link():
     links, driver, names = scrapping_pick_of_day_link()
@@ -19,7 +26,6 @@ def scrap_link():
     for link, name in zip(links, names):
         driver.get(link)
         link_count += 1
-        print(f"Visited link #{link_count}: {link}")
         logger.info(f"Visited link #{link_count}: {link}")
         time.sleep(5)
 
@@ -67,18 +73,11 @@ def scrap_link():
                                 "post": post_text,
                             }
                             logger.info(f"post_dict : {post_dict}")
-                            print("\n" + "-" * 80)
-                            print(f"post_dict : {post_dict}")
-                            print("-" * 80 + "\n")
                             input_date = re.search(r'\d{1,2}/\d{1,2}/\d{2}', name).group()
                             title_date = datetime.strptime(input_date, "%m/%d/%y").strftime("%Y-%m-%d")
                             # assistant_response = chat_gpt_integration(post_text)
-                            try:
-                                create_reditposts(link, name, post_text, title_date)
-                            except:
-                                print(f"Error processing during data insertion : {e}")
+                            create_reditposts(link, name, post_text, title_date)
                             logger.info("Data successfully insert in database")
-                            print("Data successfully insert in database")
                             if post_dict not in post_list:  # Avoid duplicate entries
                                 post_list.append(post_dict)
                                 processed_xpaths.add(xpath)  # Mark as processed
@@ -93,17 +92,15 @@ def scrap_link():
 
             # Stop scrolling if the bottom of the page is reached
             if current_height >= new_height:
-                print("Reached the bottom of the page.")
                 break
 
-        # Save data to CSV
-        csv_file = "posts.csv"
-        with open(csv_file, mode="w", newline="", encoding="utf-8") as file:
+
+        with open(CSV_FILE_NAME, mode="w", newline="", encoding="utf-8") as file:
             writer = csv.DictWriter(file, fieldnames=["url", "name", "post"])
             writer.writeheader()
             writer.writerows(post_list)
 
-    print(f"\nData saved to {csv_file} successfully!")
+    logger.info(f"\nData saved to {CSV_FILE_NAME} successfully!")
 
 scrap_link()
 

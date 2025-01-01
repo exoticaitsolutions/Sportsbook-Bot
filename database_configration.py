@@ -1,12 +1,10 @@
 import os
 import mysql.connector
-import time
 from dotenv import load_dotenv
 
 # Load environment variables from the .env file
 load_dotenv()
 
-# Access the google_credentials path from the .env file
 DB_HOST = os.getenv('DB_HOST')
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')

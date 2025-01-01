@@ -6,6 +6,7 @@ from urls import WEBSITE_URL, WEBSITE_URL_SEARCH
 from webdriver_configration import driver_confrigration
 from selenium.webdriver.common.by import By
 
+
 all_texts = []
 potd_all_texts = []
 href_links = []
@@ -33,7 +34,6 @@ logger = setup_logging()
 def scroll_down(driver):
     driver.execute_script("window.scrollBy(0, document.body.scrollHeight);")
 
-
 def scrapping_pick_of_day_link():
     logger.info("Starting the scrapping process.")
     
@@ -42,10 +42,8 @@ def scrapping_pick_of_day_link():
     
     driver.get(WEBSITE_URL)
     logger.info(f"Navigated to {WEBSITE_URL}.")
-    print(f"Navigated to {WEBSITE_URL}.")
     time.sleep(10)
     driver.get(WEBSITE_URL_SEARCH)
-    print(f"Navigated to {WEBSITE_URL_SEARCH}.")
     time.sleep(10)
     previous_length = 0
     while True:
@@ -61,9 +59,6 @@ def scrapping_pick_of_day_link():
             text = potd.get_attribute("aria-label")  # Fetch the aria-label text
             if text and text not in all_texts:  # Avoid duplicates
                 all_texts.append(text)
-                print("\n" + "-" * 80)
-                print(f"Scraped Text: {text}")
-                print("-" * 80 + "\n")
                 if "Pick of the Day" in text:
                     href = potd.get_attribute("href")
                     potd_all_texts.append(text)
@@ -75,9 +70,6 @@ def scrapping_pick_of_day_link():
         # Scroll down to load more content
         scroll_down(driver)
         time.sleep(6)  # Pause to allow the page to load more elements
-    print("length of picks of day names : ------ ", len(potd_all_texts))
     logger.info(f"length of picks of day names : ------ {len(potd_all_texts)}")
-    print("length of links : ------ ", len(href_links))
     logger.info(f"length of links : ------ {len(href_links)}")
-    print("all_texts : ", potd_all_texts)
     return href_links,driver, potd_all_texts
