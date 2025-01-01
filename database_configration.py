@@ -1,15 +1,21 @@
+import os
 import mysql.connector
 import time
+from dotenv import load_dotenv
 
-DB_HOST = 'localhost'
-DB_USER = 'root'
-DB_PASSWORD = ''
-DB_NAME = 'redit'
-TABLE_NAME = 'reditposts'
+# Load environment variables from the .env file
+load_dotenv()
 
+# Access the google_credentials path from the .env file
+DB_HOST = os.getenv('DB_HOST')
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_NAME = os.getenv('DB_NAME')
+TABLE_NAME = os.getenv('TABLE_NAME')
 
 # create_reditposts()
 def create_reditposts(site_url, name, post, title_date):
+    print("enter in database")
     # Establish the database connection
     connection = mysql.connector.connect(
         host=DB_HOST,
@@ -18,6 +24,7 @@ def create_reditposts(site_url, name, post, title_date):
         database=DB_NAME
     )
     cursor = connection.cursor()
+    print("Connect sucessfully")
  
     try:
         # Insert a new record into the `reditposts` table
@@ -27,6 +34,7 @@ def create_reditposts(site_url, name, post, title_date):
         """
         cursor.execute(insert_query, (site_url, name, post, title_date))
         redit_post_id = cursor.lastrowid  # Get the ID of the inserted row
+        
         connection.commit()  # Commit the transaction
     except mysql.connector.Error as err:
         print(f"Error: {err}")
