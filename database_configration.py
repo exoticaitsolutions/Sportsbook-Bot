@@ -15,7 +15,6 @@ TABLE_NAME = os.getenv('TABLE_NAME')
 
 # create_reditposts()
 def create_reditposts(site_url, name, post, title_date):
-    print("enter in database")
     # Establish the database connection
     connection = mysql.connector.connect(
         host=DB_HOST,
@@ -24,7 +23,6 @@ def create_reditposts(site_url, name, post, title_date):
         database=DB_NAME
     )
     cursor = connection.cursor()
-    print("Connect sucessfully")
  
     try:
         # Insert a new record into the `reditposts` table
