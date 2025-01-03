@@ -53,10 +53,10 @@ def get_last_row():
     cursor = connection.cursor(dictionary=True)  # Use dictionary=True to get results as a dictionary
     
     try:
-        # Query to fetch the last row based on the primary key or an auto-increment column
-        fetch_query = "SELECT * FROM test ORDER BY id DESC LIMIT 1"
+        # Query to fetch the latest date based on the 'title_date' column
+        fetch_query = "SELECT title_date FROM test ORDER BY title_date DESC LIMIT 1"
         cursor.execute(fetch_query)
-        last_row = cursor.fetchone()  # Fetch the last row
+        last_row = cursor.fetchone()  # Fetch the latest row
         
         if last_row is None:
             # If the database is empty, handle accordingly
@@ -64,6 +64,7 @@ def get_last_row():
             return None
         else:
             title_date = last_row.get('title_date')
+            print("titl : ", title_date)
             return title_date
 
     except mysql.connector.Error as err:
@@ -72,3 +73,4 @@ def get_last_row():
     finally:
         cursor.close()
         connection.close()
+# get_last_row()

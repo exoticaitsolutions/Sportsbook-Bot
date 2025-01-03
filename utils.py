@@ -50,7 +50,6 @@ def scrapping_pick_of_day_link():
     previous_length = 0
     data_base_last_title_date = get_last_row()
     if data_base_last_title_date is None:
-        print("No date found, skipping comparison.")
         logger.info("No date found, skipping comparison.")
         
     while True:
@@ -69,9 +68,9 @@ def scrapping_pick_of_day_link():
                     input_date = input_date_match.group()
                     title_date = datetime.strptime(input_date, "%m/%d/%y").strftime("%Y-%m-%d")
                     title_date_obj = datetime.strptime(title_date, "%Y-%m-%d").date()
+                    print("title_date_obj : ", title_date_obj)
+                    print("data_base_last_title_date : ", data_base_last_title_date)
                     if data_base_last_title_date == title_date_obj:
-                        print("No new date found")
-                        logger.info("No new date found")
                         break
                     href = potd.get_attribute("href")
                     potd_all_texts.append(text)
