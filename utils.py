@@ -1,7 +1,9 @@
 from datetime import datetime
 import os
+import re
 import time
 import logging
+from database_configration import get_last_row
 from urls import WEBSITE_URL, WEBSITE_URL_SEARCH
 from webdriver_configration import driver_confrigration
 from selenium.webdriver.common.by import By
@@ -46,30 +48,37 @@ def scrapping_pick_of_day_link():
     driver.get(WEBSITE_URL_SEARCH)
     time.sleep(10)
     previous_length = 0
+    data_base_last_title_date = get_last_row()
+    if data_base_last_title_date is None:
+        print("No date found, skipping comparison.")
+        logger.info("No date found, skipping comparison.")
+        
     while True:
         link_elements  = driver.find_elements(By.XPATH, "//a[@class='absolute inset-0']")
         if len(link_elements) == previous_length:
-            # If no new elements are loaded, stop scrolling
             break
         else:
             previous_length = len(link_elements)
-        print(f"Number of elements loaded so far: {previous_length}")
-        # Extract text from each element
-        for potd in link_elements:
+    for potd in link_elements:
             text = potd.get_attribute("aria-label")  # Fetch the aria-label text
+            
             if text and text not in all_texts:  # Avoid duplicates
                 all_texts.append(text)
-                if "Pick of the Day" in text:
+                if "Pick of the Day -" in text:
+                    input_date_match = re.search(r'\d{1,2}/\d{1,2}/\d{2}', text)
+                    input_date = input_date_match.group()
+                    title_date = datetime.strptime(input_date, "%m/%d/%y").strftime("%Y-%m-%d")
+                    title_date_obj = datetime.strptime(title_date, "%Y-%m-%d").date()
+                    if data_base_last_title_date == title_date_obj:
+                        print("No new date found")
+                        logger.info("No new date found")
+                        break
                     href = potd.get_attribute("href")
                     potd_all_texts.append(text)
-                    # print(f"Found 'Pick of the Day' link: {href}")
                     href_links.append(href)
 
-                # all_texts
-
-        # Scroll down to load more content
-        scroll_down(driver)
-        time.sleep(6)  # Pause to allow the page to load more elements
+    scroll_down(driver)
+    time.sleep(6)  # Pause to allow the page to load more elements
     logger.info(f"length of picks of day names : ------ {len(potd_all_texts)}")
     logger.info(f"length of links : ------ {len(href_links)}")
     return href_links,driver, potd_all_texts
