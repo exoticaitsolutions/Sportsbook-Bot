@@ -68,9 +68,11 @@ def scrapping_pick_of_day_link():
                     input_date = input_date_match.group()
                     title_date = datetime.strptime(input_date, "%m/%d/%y").strftime("%Y-%m-%d")
                     title_date_obj = datetime.strptime(title_date, "%Y-%m-%d").date()
-                    print("title_date_obj : ", title_date_obj)
+                    print("title_date : ", title_date_obj)
                     print("data_base_last_title_date : ", data_base_last_title_date)
                     if data_base_last_title_date == title_date_obj:
+                        print("The latest 'Pick of the Day' post is already stored in the database.")
+                        logger.info("The latest 'Pick of the Day' post is already stored in the database.")
                         break
                     href = potd.get_attribute("href")
                     potd_all_texts.append(text)
