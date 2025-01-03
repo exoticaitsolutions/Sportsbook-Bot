@@ -32,7 +32,9 @@ def scrap_link():
         logger.info(f"Visited link #{link_count}: {link}")
         time.sleep(5)
 
-        logger.log("Starting to scrape comments with slow incremental scrolling...")
+        logger.info("Starting to scrape comments with slow incremental scrolling...")
+
+
 
         # Scroll settings
         current_height = 0
